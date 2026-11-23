@@ -1,23 +1,81 @@
 # xMatters for Home Assistant
 
+![Integration usage](https://img.shields.io/badge/dynamic/json?color=41BDF5&logo=home-assistant&label=integration%20usage&suffix=%20installs&cacheSeconds=15600&url=https://analytics.home-assistant.io/custom_integrations.json&query=$.xmatters.total)
+
 Home Assistant Marketplace custom integration for xMatters on-call schedules and notifications.
 
-Repository: https://github.com/geftactics/hass-xmatters
+- [Features](#features)
+- [How to install](#how-to-install)
+- [How to set up](#how-to-set-up)
+  - [Create xMatters API credentials](#create-xmatters-api-credentials)
+  - [Add the integration](#add-the-integration)
+- [Entities](#entities)
+- [Local tests](#local-tests)
 
-## Install from Home Assistant Marketplace
+## Features
 
-1. Open **Settings → Marketplace** in Home Assistant.
-2. Select **Add from link** and enter `https://github.com/geftactics/hass-xmatters`.
-3. Find **xMatters** in Marketplace and install it.
-4. Add **xMatters** from **Settings → Devices & services**.
+- Current on-call status for a selected xMatters group.
+- Current shift end time and remaining minutes.
+- Next scheduled on-call shift.
+- Calendar entity containing up to 90 days of on-call coverage.
+- Last xMatters notification delivered to the configured user.
+- Multiple xMatters accounts and groups supported through separate config entries.
 
-Before setup, create xMatters API credentials from your xMatters profile: open **Profile → More Actions → Manage API Keys**, create an API key, and copy both the key and secret. The secret is shown only when it is created.
+## How to install
 
-The config flow asks for the xMatters company URL, username, API key, and API secret. The company URL should look like `yourcompany.xmatters.com`. It validates the URL and credentials, lists the user’s group memberships, and creates one Home Assistant config entry for the selected group. Multiple account/group entries are supported.
+The integration is installed through Home Assistant Marketplace. After installation, add the integration from **Settings → Devices & services**.
 
-The initial integration creates entities for on-call status, current shift end, current shift remaining, next on-call start, and the last xMatters notification. The default polling interval is 60 seconds and the notification lookback is 7 days.
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=geftactics&repository=hass-xmatters&category=integration)
 
-The integration uses HTTP Basic authentication with the API key as the username, prefixed with `x-api-key-` as required by xMatters, and the secret as the password. It makes read-only API requests for user, group, on-call, and event data.
+To install:
+
+1. Select the button above, or open **Settings → Marketplace**.
+2. If prompted, choose **Add from link** and enter `https://github.com/geftactics/hass-xmatters`.
+3. Select **xMatters** and install it.
+4. Go to **Settings → Devices & services → Add integration** and search for **xMatters**.
+
+## How to set up
+
+### Create xMatters API credentials
+
+Create an API key and secret in xMatters before starting the Home Assistant setup:
+
+1. Open your xMatters profile.
+2. Select **More Actions → Manage API Keys**.
+3. Create a new API key credential.
+4. Copy the API key and secret. The secret may only be shown when the credential is created.
+
+The API key uses the permissions of the xMatters user who created it, so that user must be able to view people, group memberships, on-call schedules, and events.
+
+### Add the integration
+
+[![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=xmatters)
+
+During setup, enter:
+
+- **Company URL**: for example, `yourcompany.xmatters.com`.
+- **Username**: your xMatters target name or web login.
+- **API key** and **API secret**: the credentials created above.
+- **Polling interval**: defaults to 60 seconds; values from 30 to 3600 seconds are accepted.
+
+The credentials are validated before Home Assistant asks you to select a group. Each account/group selection creates a separate config entry, so the same account can monitor multiple groups.
+
+## Entities
+
+Each configured account/group creates:
+
+- `binary_sensor`: whether the user is currently on call.
+- `sensor`: current shift end time.
+- `sensor`: current shift remaining in minutes.
+- `sensor`: next on-call start time.
+- `sensor`: timestamp and details of the last xMatters notification.
+- `calendar`: current and upcoming on-call coverage.
+
+The integration requests up to 90 days of future schedule data from xMatters. The “Next on call” sensor exposes the first upcoming shift; the calendar contains all returned coverage.
+
+## Integration usage
+
+The badge at the top uses the public Home Assistant Analytics data for custom integrations. It displays the aggregate number of installations reporting the `xmatters` domain. Only users who opt in to Home Assistant analytics are counted; the public data contains aggregated totals, not individual installations.
 
 ## Local tests
 
@@ -27,4 +85,4 @@ The API filtering and date-range behavior can be tested without Home Assistant o
 python3 -m unittest discover -s tests -v
 ```
 
-The integration also treats notification-history failures as non-fatal, so on-call entities can still start if the xMatters events endpoint returns a permission or server error.
+Notification-history failures are non-fatal, so on-call entities can still start if the xMatters events endpoint returns a permission or server error.
