@@ -1,0 +1,19 @@
+name: HACS
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  hacs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+      - name: Validate with HACS
+        uses: hacs/action@main
+        with:
+          category: integration

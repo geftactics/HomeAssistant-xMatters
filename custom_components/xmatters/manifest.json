@@ -3,9 +3,10 @@
   "name": "xMatters",
   "codeowners": ["@geftactics"],
   "config_flow": true,
-  "documentation": "https://github.com/geftactics/hass-xmatters",
+  "documentation": "https://github.com/geftactics/HomeAssistant-xMatters",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/geftactics/hass-xmatters/issues",
+  "issue_tracker": "https://github.com/geftactics/HomeAssistant-xMatters/issues",
+  "categories": ["messaging_notifications"],
   "requirements": [],
-  "version": "0.1.0"
+  "version": "0.1.1"
 }

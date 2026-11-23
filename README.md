@@ -10,7 +10,6 @@ Home Assistant Marketplace custom integration for xMatters on-call schedules and
   - [Create xMatters API credentials](#create-xmatters-api-credentials)
   - [Add the integration](#add-the-integration)
 - [Entities](#entities)
-- [Local tests](#local-tests)
 
 ## Features
 
@@ -25,12 +24,12 @@ Home Assistant Marketplace custom integration for xMatters on-call schedules and
 
 The integration is installed through Home Assistant Marketplace. After installation, add the integration from **Settings → Devices & services**.
 
-[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=geftactics&repository=hass-xmatters&category=integration)
+[![Open your Home Assistant instance and open a repository in the Marketplace.](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=geftactics&repository=HomeAssistant-xMatters&category=integration)
 
 To install:
 
 1. Select the button above, or open **Settings → Marketplace**.
-2. If prompted, choose **Add from link** and enter `https://github.com/geftactics/hass-xmatters`.
+2. If prompted, choose **Add from link** and enter `https://github.com/geftactics/HomeAssistant-xMatters`.
 3. Select **xMatters** and install it.
 4. Go to **Settings → Devices & services → Add integration** and search for **xMatters**.
 
@@ -72,17 +71,3 @@ Each configured account/group creates:
 - `calendar`: current and upcoming on-call coverage.
 
 The integration requests up to 90 days of future schedule data from xMatters. The “Next on call” sensor exposes the first upcoming shift; the calendar contains all returned coverage.
-
-## Integration usage
-
-The badge at the top uses the public Home Assistant Analytics data for custom integrations. It displays the aggregate number of installations reporting the `xmatters` domain. Only users who opt in to Home Assistant analytics are counted; the public data contains aggregated totals, not individual installations.
-
-## Local tests
-
-The API filtering and date-range behavior can be tested without Home Assistant or xMatters credentials:
-
-```sh
-python3 -m unittest discover -s tests -v
-```
-
-Notification-history failures are non-fatal, so on-call entities can still start if the xMatters events endpoint returns a permission or server error.
