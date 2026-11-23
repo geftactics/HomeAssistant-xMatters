@@ -3,14 +3,13 @@
     "step": {
       "user": {
         "title": "Connect to xMatters",
-        "description": "Create API credentials in xMatters under Profile → More Actions → Manage API Keys.",
+        "description": "Enter your xMatters company URL, for example {instance_hint}. Create credentials in xMatters under Profile → More Actions → Manage API Keys.",
         "data": {
           "instance": "xMatters company URL",
           "username": "Username",
           "api_key": "API key",
           "api_secret": "API secret",
-          "scan_interval": "Polling interval (seconds)",
-          "lookback_days": "Notification lookback (days)"
+          "scan_interval": "Polling interval (seconds)"
         }
       },
       "group": {
@@ -22,6 +21,7 @@
     "error": {
       "cannot_connect": "Unable to connect to xMatters.",
       "invalid_auth": "The API credentials were rejected.",
+      "invalid_instance": "Enter an HTTPS xMatters company URL such as yourcompany.xmatters.com.",
       "no_groups": "This user is not a member of any groups."
     },
     "abort": {"already_configured": "This account and group are already configured."}

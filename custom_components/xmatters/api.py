@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone
 from typing import Any
-from urllib.parse import quote, urlencode
+from urllib.parse import quote, urlparse
 
 from aiohttp import BasicAuth, ClientError, ClientResponseError, ClientSession
 
@@ -19,6 +19,10 @@ def normalise_instance(instance: str) -> str:
     value = instance.strip().rstrip("/")
     if not value.startswith(("https://", "http://")):
         value = f"https://{value}"
+    parsed = urlparse(value)
+    hostname = (parsed.hostname or "").lower()
+    if parsed.scheme != "https" or not hostname.endswith(".xmatters.com"):
+        raise ValueError("Use an HTTPS xMatters company URL such as yourcompany.xmatters.com")
     return value
 
 
@@ -102,7 +106,6 @@ class XMattersApi:
                 "sortBy": "START_TIME",
                 "sortOrder": "DESCENDING",
                 "limit": 1,
-                "embed": "properties,recipients",
             },
         )
         events = result.get("data", []) if isinstance(result, dict) else result

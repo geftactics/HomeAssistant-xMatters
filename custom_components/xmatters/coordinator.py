@@ -8,7 +8,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .api import XMattersApi, XMattersApiError
-from .const import CONF_GROUP_ID, CONF_LOOKBACK_DAYS, CONF_USERNAME
+from .const import CONF_GROUP_ID, CONF_USERNAME, DEFAULT_LOOKBACK_DAYS
 
 
 class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -34,7 +34,7 @@ class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             )
             notification = await self.api.get_last_notification(
                 user.get("targetName", self.entry.data[CONF_USERNAME]),
-                self.entry.data[CONF_LOOKBACK_DAYS],
+                DEFAULT_LOOKBACK_DAYS,
             )
             now = datetime.now().astimezone()
             current = [

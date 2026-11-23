@@ -15,10 +15,8 @@ from .const import (
     CONF_GROUP_ID,
     CONF_GROUP_NAME,
     CONF_INSTANCE,
-    CONF_LOOKBACK_DAYS,
     CONF_SCAN_INTERVAL,
     CONF_USERNAME,
-    DEFAULT_LOOKBACK_DAYS,
     DEFAULT_SCAN_INTERVAL,
     DOMAIN,
 )
@@ -31,16 +29,19 @@ class XMattersConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
     def __init__(self) -> None:
         self._credentials: dict[str, Any] = {}
+        self._user_input: dict[str, Any] = {}
         self._user: dict[str, Any] = {}
         self._memberships: list[dict[str, Any]] = []
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         errors: dict[str, str] = {}
         if user_input:
+            self._user_input = user_input.copy()
             try:
+                instance = normalise_instance(user_input[CONF_INSTANCE])
                 api = XMattersApi(
                     async_get_clientsession(self.hass),
-                    user_input[CONF_INSTANCE],
+                    instance,
                     user_input[CONF_API_KEY],
                     user_input[CONF_API_SECRET],
                 )
@@ -48,25 +49,29 @@ class XMattersConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 if not memberships:
                     errors["base"] = "no_groups"
                 else:
-                    self._credentials = {**user_input, CONF_INSTANCE: normalise_instance(user_input[CONF_INSTANCE])}
+                    self._credentials = {**user_input, CONF_INSTANCE: instance}
                     self._user = user
                     self._memberships = memberships
                     return await self.async_step_group()
             except XMattersAuthError:
                 errors["base"] = "invalid_auth"
+            except ValueError:
+                errors["base"] = "invalid_instance"
             except XMattersApiError:
                 errors["base"] = "cannot_connect"
 
         return self.async_show_form(
             step_id="user",
+            description_placeholders={"instance_hint": "yourcompany.xmatters.com"},
             data_schema=vol.Schema(
                 {
-                    vol.Required(CONF_INSTANCE): str,
-                    vol.Required(CONF_USERNAME): str,
-                    vol.Required(CONF_API_KEY): str,
-                    vol.Required(CONF_API_SECRET): str,
-                    vol.Optional(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): vol.All(vol.Coerce(int), vol.Range(min=30, max=3600)),
-                    vol.Optional(CONF_LOOKBACK_DAYS, default=DEFAULT_LOOKBACK_DAYS): vol.All(vol.Coerce(int), vol.Range(min=1, max=30)),
+                    vol.Required(CONF_INSTANCE, default=self._user_input.get(CONF_INSTANCE, "")): selector.TextSelector(
+                        selector.TextSelectorConfig(type=selector.TextSelectorType.URL)
+                    ),
+                    vol.Required(CONF_USERNAME, default=self._user_input.get(CONF_USERNAME, "")): str,
+                    vol.Required(CONF_API_KEY, default=self._user_input.get(CONF_API_KEY, "")): str,
+                    vol.Required(CONF_API_SECRET, default=self._user_input.get(CONF_API_SECRET, "")): str,
+                    vol.Optional(CONF_SCAN_INTERVAL, default=self._user_input.get(CONF_SCAN_INTERVAL, DEFAULT_SCAN_INTERVAL)): vol.All(vol.Coerce(int), vol.Range(min=30, max=3600)),
                 }
             ),
             errors=errors,
