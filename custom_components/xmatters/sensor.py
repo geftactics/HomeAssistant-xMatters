@@ -58,6 +58,7 @@ class XMattersNextOnCall(XMattersSensor):
 
 class XMattersCurrentRemaining(XMattersSensor):
     _attr_name = "Current shift remaining"
+    _attr_icon = "mdi:clock-fast"
     _attr_native_unit_of_measurement = "min"
     _attr_state_class = SensorStateClass.MEASUREMENT
 
@@ -75,6 +76,7 @@ class XMattersCurrentRemaining(XMattersSensor):
 
 class XMattersLastNotification(XMattersSensor):
     _attr_name = "Last notification"
+    _attr_icon = "mdi:bell"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
     def __init__(self, coordinator, entry):

@@ -17,6 +17,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class XMattersOnCallBinarySensor(CoordinatorEntity[XMattersDataUpdateCoordinator], BinarySensorEntity):
     _attr_has_entity_name = True
     _attr_name = "On call"
+    _attr_icon = "mdi:account-box"
 
     def __init__(self, coordinator: XMattersDataUpdateCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)
