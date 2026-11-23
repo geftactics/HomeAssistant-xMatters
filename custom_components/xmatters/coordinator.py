@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
+import logging
 from typing import Any
 
 from homeassistant.config_entries import ConfigEntry
@@ -9,6 +10,8 @@ from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, Upda
 
 from .api import XMattersApi, XMattersApiError
 from .const import CONF_GROUP_ID, CONF_USERNAME, DEFAULT_LOOKBACK_DAYS
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
@@ -32,10 +35,17 @@ class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 user,
                 days=90,
             )
-            notification = await self.api.get_last_notification(
-                user.get("targetName", self.entry.data[CONF_USERNAME]),
-                DEFAULT_LOOKBACK_DAYS,
-            )
+            try:
+                notification = await self.api.get_last_notification(
+                    user.get("targetName", self.entry.data[CONF_USERNAME]),
+                    DEFAULT_LOOKBACK_DAYS,
+                )
+            except XMattersApiError as err:
+                # Notification history is useful but should not prevent the
+                # on-call entities from starting when this endpoint is not
+                # available to the API user or has a transient server error.
+                _LOGGER.warning("Unable to fetch xMatters notification history: %s", err)
+                notification = None
             now = datetime.now().astimezone()
             current = [
                 shift

@@ -18,3 +18,13 @@ The config flow asks for the xMatters company URL, username, API key, and API se
 The initial integration creates entities for on-call status, current shift end, current shift remaining, next on-call start, and the last xMatters notification. The default polling interval is 60 seconds and the notification lookback is 7 days.
 
 The integration uses HTTP Basic authentication with the API key as the username, prefixed with `x-api-key-` as required by xMatters, and the secret as the password. It makes read-only API requests for user, group, on-call, and event data.
+
+## Local tests
+
+The API filtering and date-range behavior can be tested without Home Assistant or xMatters credentials:
+
+```sh
+python3 -m unittest discover -s tests -v
+```
+
+The integration also treats notification-history failures as non-fatal, so on-call entities can still start if the xMatters events endpoint returns a permission or server error.

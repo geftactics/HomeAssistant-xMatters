@@ -44,10 +44,10 @@ class XMattersApi:
         try:
             async with self._session.get(url, params=params, auth=self._auth) as response:
                 if response.status in (401, 403):
-                    raise XMattersAuthError("xMatters rejected the API credentials or permissions")
+                    raise XMattersAuthError(f"xMatters rejected the API credentials or permissions for {path}")
                 if response.status >= 400:
                     detail = await response.text()
-                    raise XMattersApiError(f"xMatters returned HTTP {response.status}: {detail[:500]}")
+                    raise XMattersApiError(f"xMatters returned HTTP {response.status} for {path}: {detail[:500]}")
                 return await response.json()
         except (ClientResponseError, ClientError) as err:
             raise XMattersApiError(f"Could not connect to xMatters: {err}") from err
