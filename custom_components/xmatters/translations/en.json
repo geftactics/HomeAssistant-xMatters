@@ -1,0 +1,29 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to xMatters",
+        "description": "Create API credentials in xMatters under Profile → More Actions → Manage API Keys.",
+        "data": {
+          "instance": "xMatters company URL",
+          "username": "Username",
+          "api_key": "API key",
+          "api_secret": "API secret",
+          "scan_interval": "Polling interval (seconds)",
+          "lookback_days": "Notification lookback (days)"
+        }
+      },
+      "group": {
+        "title": "Choose an on-call group",
+        "description": "Select the xMatters group this Home Assistant entry should monitor.",
+        "data": {"group_id": "On-call group"}
+      }
+    },
+    "error": {
+      "cannot_connect": "Unable to connect to xMatters.",
+      "invalid_auth": "The API credentials were rejected.",
+      "no_groups": "This user is not a member of any groups."
+    },
+    "abort": {"already_configured": "This account and group are already configured."}
+  }
+}

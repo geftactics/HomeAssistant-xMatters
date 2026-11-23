@@ -1,0 +1,11 @@
+{
+  "domain": "xmatters",
+  "name": "xMatters",
+  "codeowners": ["@geftactics"],
+  "config_flow": true,
+  "documentation": "https://github.com/geftactics/hass-xmatters",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/geftactics/hass-xmatters/issues",
+  "requirements": [],
+  "version": "0.1.0"
+}
