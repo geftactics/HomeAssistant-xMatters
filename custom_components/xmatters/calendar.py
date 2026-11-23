@@ -19,6 +19,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
 class XMattersOnCallCalendar(CoordinatorEntity[XMattersDataUpdateCoordinator], CalendarEntity):
     _attr_has_entity_name = True
     _attr_name = "On-call schedule"
+    _attr_icon = "mdi:calendar-clock"
 
     def __init__(self, coordinator: XMattersDataUpdateCoordinator, entry: ConfigEntry) -> None:
         super().__init__(coordinator)

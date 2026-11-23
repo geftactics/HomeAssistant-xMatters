@@ -32,6 +32,7 @@ class XMattersSensor(CoordinatorEntity[XMattersDataUpdateCoordinator], SensorEnt
 
 class XMattersCurrentShiftEnds(XMattersSensor):
     _attr_name = "Current shift ends"
+    _attr_icon = "mdi:clock-end"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
     def __init__(self, coordinator, entry):
@@ -45,6 +46,7 @@ class XMattersCurrentShiftEnds(XMattersSensor):
 
 class XMattersNextOnCall(XMattersSensor):
     _attr_name = "Next on call"
+    _attr_icon = "mdi:calendar-clock"
     _attr_device_class = SensorDeviceClass.TIMESTAMP
 
     def __init__(self, coordinator, entry):
