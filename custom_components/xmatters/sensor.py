@@ -17,6 +17,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
         XMattersCurrentShiftEnds(entry.runtime_data, entry),
         XMattersNextOnCall(entry.runtime_data, entry),
         XMattersLastNotification(entry.runtime_data, entry),
+        XMattersLastNotificationTime(entry.runtime_data, entry),
     ])
 
 
@@ -59,11 +60,32 @@ class XMattersNextOnCall(XMattersSensor):
 
 class XMattersLastNotification(XMattersSensor):
     _attr_name = "Last notification"
-    _attr_icon = "mdi:bell"
-    _attr_device_class = SensorDeviceClass.TIMESTAMP
+    _attr_icon = "mdi:message"
 
     def __init__(self, coordinator, entry):
         super().__init__(coordinator, entry, "last_notification")
+
+    @property
+    def native_value(self):
+        notification = self.coordinator.data.get("last_notification")
+        if not notification:
+            return None
+        name = notification.get("name") or notification.get("eventId")
+        return str(name)[:255] if name else None
+
+    @property
+    def extra_state_attributes(self):
+        notification = self.coordinator.data.get("last_notification") or {}
+        return {key: notification[key] for key in ("id", "name", "status", "priority", "incidentId") if key in notification}
+
+
+class XMattersLastNotificationTime(XMattersSensor):
+    _attr_name = "Last notification time"
+    _attr_icon = "mdi:clock-alert"
+    _attr_device_class = SensorDeviceClass.TIMESTAMP
+
+    def __init__(self, coordinator, entry):
+        super().__init__(coordinator, entry, "last_notification_time")
 
     @property
     def native_value(self):

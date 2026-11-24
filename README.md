@@ -64,7 +64,7 @@ Each configured account/group creates:
 - `binary_sensor`: whether the user is currently on call.
 - `sensor`: current shift end time.
 - `sensor`: next on-call start time.
-- `sensor`: timestamp and details of the last xMatters notification.
+- `sensor`: the last xMatters notification name and its timestamp.
 - `calendar`: current and upcoming on-call coverage.
 
 The integration requests up to 90 days of future schedule data from xMatters. The “Next on call” sensor exposes the first upcoming shift; the calendar contains all returned coverage.
