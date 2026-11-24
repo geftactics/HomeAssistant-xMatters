@@ -1,8 +1,8 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 
-from homeassistant.components.sensor import SensorDeviceClass, SensorEntity, SensorStateClass
+from homeassistant.components.sensor import SensorDeviceClass, SensorEntity
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -16,7 +16,6 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
     async_add_entities([
         XMattersCurrentShiftEnds(entry.runtime_data, entry),
         XMattersNextOnCall(entry.runtime_data, entry),
-        XMattersCurrentRemaining(entry.runtime_data, entry),
         XMattersLastNotification(entry.runtime_data, entry),
     ])
 
@@ -56,24 +55,6 @@ class XMattersNextOnCall(XMattersSensor):
     def native_value(self):
         upcoming = self.coordinator.data.get("upcoming", [])
         return _parse_time(upcoming[0]["start"]) if upcoming else None
-
-
-class XMattersCurrentRemaining(XMattersSensor):
-    _attr_name = "Current shift remaining"
-    _attr_icon = "mdi:clock-fast"
-    _attr_native_unit_of_measurement = "min"
-    _attr_state_class = SensorStateClass.MEASUREMENT
-
-    def __init__(self, coordinator, entry):
-        super().__init__(coordinator, entry, "current_shift_remaining")
-
-    @property
-    def native_value(self):
-        current = self.coordinator.data.get("current", [])
-        if not current:
-            return 0
-        end = _parse_time(current[0]["end"])
-        return max(0, round((end - datetime.now(timezone.utc)).total_seconds() / 60))
 
 
 class XMattersLastNotification(XMattersSensor):

@@ -12,7 +12,7 @@ Home Assistant Marketplace custom integration for xMatters on-call schedules and
 ## Features
 
 - Current on-call status for a selected xMatters group.
-- Current shift end time and remaining minutes.
+- Current shift end time.
 - Next scheduled on-call shift.
 - Calendar entity containing up to 90 days of on-call coverage.
 - Last xMatters notification delivered to the configured user.
@@ -63,7 +63,6 @@ Each configured account/group creates:
 
 - `binary_sensor`: whether the user is currently on call.
 - `sensor`: current shift end time.
-- `sensor`: current shift remaining in minutes.
 - `sensor`: next on-call start time.
 - `sensor`: timestamp and details of the last xMatters notification.
 - `calendar`: current and upcoming on-call coverage.
