@@ -24,7 +24,7 @@ class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         self._notification_store: Store[dict[str, Any]] = Store(
             hass,
             1,
-            f"xmatters_last_notification_{entry.entry_id}",
+            f"xmatters_last_notification_v2_{entry.entry_id}",
         )
         self._last_notification: dict[str, Any] | None = None
         super().__init__(
@@ -50,6 +50,7 @@ class XMattersDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             try:
                 notification = await self.api.get_last_notification(
                     user["id"],
+                    self.entry.data[CONF_GROUP_ID],
                     DEFAULT_LOOKBACK_DAYS,
                 )
             except XMattersApiError as err:

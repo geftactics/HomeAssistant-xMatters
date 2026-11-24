@@ -15,7 +15,7 @@ Home Assistant Marketplace custom integration for xMatters on-call schedules and
 - Current shift end time.
 - Next scheduled on-call shift.
 - Calendar entity containing up to 90 days of on-call coverage.
-- Last xMatters notification delivered to the configured user.
+- Last xMatters notification delivered to the configured user through the selected group.
 - Multiple xMatters accounts and groups supported through separate config entries.
 
 ## How to install
@@ -64,7 +64,7 @@ Each configured account/group creates:
 - `binary_sensor`: whether the user is currently on call.
 - `sensor`: current shift end time.
 - `sensor`: next on-call start time.
-- `sensor`: the last xMatters notification name and its timestamp.
+- `sensor`: the last xMatters notification name and its timestamp for the selected group.
 - `calendar`: current and upcoming on-call coverage.
 
 The integration requests up to 90 days of future schedule data from xMatters. The “Next on call” sensor exposes the first upcoming shift; the calendar contains all returned coverage.

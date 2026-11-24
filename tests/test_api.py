@@ -94,13 +94,14 @@ class ApiTests(unittest.TestCase):
         self.assertIn("from", session.calls[1][1])
 
     def test_last_notification_uses_xmatters_user_id(self):
-        session = _Session([{"data": [{"id": "event-1", "created": "2026-11-24T01:00:00Z"}]}])
+        session = _Session([{"data": [{"id": "event-1", "name": "Test notification", "created": "2026-11-24T01:00:00Z"}]}])
         api = XMattersApi(session, "team.xmatters.com", "api-key", "secret")
 
-        result = asyncio.run(api.get_last_notification("user-1", 7))
+        result = asyncio.run(api.get_last_notification("user-1", "group-1", 7))
 
         self.assertEqual(result["id"], "event-1")
         self.assertEqual(session.calls[0][1]["resolvedUsers"], "user-1")
+        self.assertEqual(session.calls[0][1]["targetedRecipients"], "group-1")
 
 
 if __name__ == "__main__":

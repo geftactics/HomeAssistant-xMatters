@@ -94,22 +94,23 @@ class XMattersApi:
         wanted = {str(user.get(key, "")).casefold() for key in ("id", "targetName", "webLogin")}
         return bool((identifiers - {""}) & (wanted - {""}))
 
-    async def get_last_notification(self, user_id: str, lookback_days: int) -> dict[str, Any] | None:
+    async def get_last_notification(self, user_id: str, group_id: str, lookback_days: int) -> dict[str, Any] | None:
         now = datetime.now(timezone.utc)
         result = await self._get(
             "/events",
             {
                 "resolvedUsers": user_id,
+                "targetedRecipients": group_id,
                 "from": _utc(now - timedelta(days=lookback_days)),
                 "to": _utc(now),
                 "at": _utc(now),
                 "sortBy": "START_TIME",
                 "sortOrder": "DESCENDING",
-                "limit": 1,
+                "limit": 10,
             },
         )
         events = result.get("data", []) if isinstance(result, dict) else result
-        return events[0] if events else None
+        return next((event for event in events if event.get("name")), None)
 
     async def validate(self, username: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         user = await self.get_user(username)
