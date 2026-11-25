@@ -110,7 +110,28 @@ class XMattersApi:
             },
         )
         events = result.get("data", []) if isinstance(result, dict) else result
-        return next((event for event in events if event.get("name")), None)
+        for event in events:
+            if not event.get("name"):
+                continue
+            event_id = event.get("id") or event.get("eventId")
+            if not event_id:
+                continue
+            deliveries = await self._get(
+                f"/events/{quote(str(event_id), safe='')}/user-deliveries",
+                {"at": _utc(now), "embed": "person.properties"},
+            )
+            if self._user_has_delivery(deliveries, user_id):
+                return event
+        return None
+
+    @staticmethod
+    def _user_has_delivery(deliveries: Any, user_id: str) -> bool:
+        records = deliveries.get("data", []) if isinstance(deliveries, dict) else deliveries
+        return any(
+            isinstance(record, dict)
+            and str(record.get("person", {}).get("id", "")) == user_id
+            for record in records or []
+        )
 
     async def validate(self, username: str) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         user = await self.get_user(username)
